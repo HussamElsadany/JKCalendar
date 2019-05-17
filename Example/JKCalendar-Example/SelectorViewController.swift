@@ -65,7 +65,12 @@ class SelectorViewController: UIViewController {
         calendar.textColor = UIColor(white: 0.25, alpha: 1)
         calendar.backgroundColor = UIColor.white
         
-        calendar.isNearbyMonthNameDisplayed = false
+        calendar.monthFont = UIFont(name: "Zapfino", size: 15)!
+        calendar.yearFont = UIFont(name: "Zapfino", size: 15)!
+        calendar.markFont = UIFont(name: "Farah", size: 15)!
+        calendar.monthButtonsFont = UIFont(name: "Zapfino", size: 10)!
+        
+        calendar.isNearbyMonthNameDisplayed = true
         calendar.isScrollEnabled = false
     }
 
