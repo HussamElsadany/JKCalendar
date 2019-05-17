@@ -502,7 +502,7 @@ class JKCalendarView: UIView{
                 }
                 
                 let dayString = "\(info.day.day)" as NSString
-                let font = UIFont(name: "HelveticaNeue-Medium", size: 13)!
+                guard let font = calendar.markFont else { return }
                 
                 let paragraphStyle = NSMutableParagraphStyle()
                 paragraphStyle.alignment = .center
@@ -549,7 +549,7 @@ class JKCalendarView: UIView{
         
         return nil
     }
-
+    
     @objc
     func handleTap(_ recognizer: UITapGestureRecognizer) {
         let position = recognizer.location(in: self)
@@ -557,7 +557,7 @@ class JKCalendarView: UIView{
             calendar.delegate?.calendar?(calendar, didTouch: info.day)
         }
     }
-
+    
     @objc
     func handlePan(_ recognizer: UIPanGestureRecognizer) {
         let position = recognizer.location(in: self)
@@ -567,18 +567,18 @@ class JKCalendarView: UIView{
                 calendar.delegate?.calendar?(calendar, didPan: [info.day])
                 panBeganDay = info.day
                 panChangedDay = info.day
-
+                
             case .changed:
                 if let changedDay = panChangedDay, changedDay == info.day {
                 } else if let beganDay = panBeganDay {
                     calendar.delegate?.calendar?(calendar, didPan: beganDay.days(until: info.day))
                 }
                 panChangedDay = info.day
-
+                
             case .ended:
                 panBeganDay = nil
                 panChangedDay = nil
-
+                
             default:
                 break
             }

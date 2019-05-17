@@ -28,26 +28,26 @@ import JKInfinitePageView
 public class JKCalendar: UIView {
     
     /**
-         A gregorian calendar
+     A gregorian calendar
      */
     static public let calendar = Calendar(identifier: .gregorian)
     
     /**
-         The object that acts as the delegate of the calendar view.
+     The object that acts as the delegate of the calendar view.
      
-         The delegate must adopt the JKCalendarDelegate protocol. The calendar view maintains a weak reference to the delegate object.
+     The delegate must adopt the JKCalendarDelegate protocol. The calendar view maintains a weak reference to the delegate object.
      */
     public weak var delegate: JKCalendarDelegate?
     
     /**
-         The object that provides the marks data for the calendar view.
+     The object that provides the marks data for the calendar view.
      
-         The data source must adopt the JKCalendarDataSource protocol. The calendar view maintains a weak reference to the data source object.
+     The data source must adopt the JKCalendarDataSource protocol. The calendar view maintains a weak reference to the data source object.
      */
     public weak var dataSource: JKCalendarDataSource?
     
     /**
-         The status of the calendar view.
+     The status of the calendar view.
      */
     public var status: JKCalendarViewStatus {
         if collapsedValue == collapsedMaximum {
@@ -58,9 +58,48 @@ public class JKCalendar: UIView {
             return .between
         }
     }
-
+    
+    
+    
     /**
-        The color of the day text. Default value for this property is a black color.
+     The Font of the Month Button text. Default value for this property is Helvetic.
+     */
+    public var monthButtonsFont: UIFont? = UIFont(name: "HelveticaNeue-Medium", size: 13) {
+        didSet {
+            previousButton.titleLabel?.font = monthButtonsFont
+            nextButton.titleLabel?.font = monthButtonsFont
+        }
+    }
+    
+    /**
+     The Font of the Year text. Default value for this property is Helvetic.
+     */
+    public var yearFont: UIFont? = UIFont(name: "HelveticaNeue-Medium", size: 13) {
+        didSet {
+            yearLabel.font = yearFont
+        }
+    }
+    
+    /**
+     The Font of the Month text. Default value for this property is Helvetic.
+     */
+    public var monthFont: UIFont? = UIFont(name: "HelveticaNeue-Medium", size: 13) {
+        didSet {
+            monthLabel.font = monthFont
+        }
+    }
+    
+    /**
+     The Font of the day text. Default value for this property is Helvetic.
+     */
+    public var markFont: UIFont? = UIFont(name: "HelveticaNeue-Medium", size: 13) {
+        didSet {
+            reloadData()
+        }
+    }
+    
+    /**
+     The color of the day text. Default value for this property is a black color.
      */
     public var textColor: UIColor = UIColor.black {
         didSet {
@@ -69,7 +108,7 @@ public class JKCalendar: UIView {
     }
     
     /**
-        A Boolean value that determines whether scrolling is enabled. The default is true.
+     A Boolean value that determines whether scrolling is enabled. The default is true.
      */
     public var isScrollEnabled: Bool = true {
         didSet {
@@ -81,12 +120,12 @@ public class JKCalendar: UIView {
     }
     
     /**
-         This Boolean determines whether the calendar status is collapsed at initialization. The default is false.
+     This Boolean determines whether the calendar status is collapsed at initialization. The default is false.
      */
     public var isInitializationCollapsed: Bool = false
     
     /**
-         This Boolean determines whether the top view is displayed. The default is true.
+     This Boolean determines whether the top view is displayed. The default is true.
      */
     public var isTopViewDisplayed: Bool = true {
         didSet{
@@ -96,7 +135,7 @@ public class JKCalendar: UIView {
     }
     
     /**
-         This Boolean determines whether nearby month button is displayed. The default is true.
+     This Boolean determines whether nearby month button is displayed. The default is true.
      */
     public var isNearbyMonthButtonDisplayed: Bool = true {
         didSet {
@@ -106,7 +145,7 @@ public class JKCalendar: UIView {
     }
     
     /**
-         A Boolean value that determines whether nearby month name is displayed. The default is true.
+     A Boolean value that determines whether nearby month name is displayed. The default is true.
      */
     public var isNearbyMonthNameDisplayed: Bool = true {
         didSet {
@@ -116,7 +155,7 @@ public class JKCalendar: UIView {
     }
     
     /**
-        The calendar view is background color. The default value is nil, which results in a transparent background color.
+     The calendar view is background color. The default value is nil, which results in a transparent background color.
      */
     public override var backgroundColor: UIColor? {
         set {
@@ -126,14 +165,14 @@ public class JKCalendar: UIView {
             calendarPageView?.currentView?.backgroundColor = newValue
             footerView?.backgroundColor = newValue
         }
-
+        
         get {
             return calendarPageView?.backgroundColor
         }
     }
     
     /**
-        The month object of the calendar view. The default is the current month.
+     The month object of the calendar view. The default is the current month.
      */
     public var month: JKMonth {
         set {
@@ -142,14 +181,14 @@ public class JKCalendar: UIView {
             }
             _month = newValue
         }
-
+        
         get {
             return _month
         }
     }
     
     /**
-        The property is the display week index of the calendar view in the folded state.
+     The property is the display week index of the calendar view in the folded state.
      */
     public var focusWeek: Int{
         set {
@@ -287,7 +326,7 @@ public class JKCalendar: UIView {
     func setupContentViewUI() {
         let bundle = Bundle(for: type(of: self))
         let nib = UINib(nibName: "JKCalendar", bundle: bundle)
-
+        
         let contentView = nib.instantiate(withOwner: self, options: nil)[0] as! UIView
         contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.backgroundColor = backgroundColor
@@ -297,7 +336,7 @@ public class JKCalendar: UIView {
         contentViewBottomConstraint = NSLayoutConstraint(item: self, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: 0)
         
         let horizontalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[contentView]|", options: .directionLeadingToTrailing, metrics: nil, views: ["contentView": contentView])
-
+        
         addConstraint(topConstraint)
         addConstraint(contentViewBottomConstraint)
         addConstraints(horizontalConstraints)
@@ -314,11 +353,11 @@ public class JKCalendar: UIView {
         
         setupLabels()
     }
-
+    
     func setupLabels() {
         monthLabel.text = month.name
         yearLabel.text = "\(month.year)"
-
+        
         previousButton.setTitle(isNearbyMonthNameDisplayed ? month.previous.name : nil, for: .normal)
         nextButton.setTitle(isNearbyMonthNameDisplayed ? month.next.name : nil, for: .normal)
     }
@@ -360,7 +399,7 @@ public class JKCalendar: UIView {
     }
     
     /**
-        Reloads all of the marks data for the calendar view.
+     Reloads all of the marks data for the calendar view.
      */
     public func reloadData() {
         if let calendarView = calendarPageView.currentView as? JKCalendarView{
@@ -370,10 +409,10 @@ public class JKCalendar: UIView {
     }
     
     /**
-         Collapsed up the calendar view.
+     Collapsed up the calendar view.
      
-         - Parameters:
-         - animated: True to animate the transition at a constant velocity to the collapsed status, false to make the transition immediate.
+     - Parameters:
+     - animated: True to animate the transition at a constant velocity to the collapsed status, false to make the transition immediate.
      */
     public func collapse(animated: Bool) {
         if let object = interactionObject{
@@ -388,10 +427,10 @@ public class JKCalendar: UIView {
     }
     
     /**
-         expanded up the calendar view.
+     expanded up the calendar view.
      
-         - Parameters:
-         - animated: True to animate the transition at a constant velocity to the expanded status, false to make the transition immediate.
+     - Parameters:
+     - animated: True to animate the transition at a constant velocity to the expanded status, false to make the transition immediate.
      */
     public func expand(animated: Bool) {
         if let object = interactionObject{
@@ -437,14 +476,14 @@ public class JKCalendar: UIView {
     }
     
     /**
-        Move the calendar view to the next month or week
+     Move the calendar view to the next month or week
      */
     public func next() {
         calendarPageView.nextPage()
     }
     
     /**
-        Move the calendar view to the previous month or week
+     Move the calendar view to the previous month or week
      */
     public func previous() {
         calendarPageView.previousPage()
@@ -594,7 +633,7 @@ extension JKCalendar: JKInfinitePageViewDataSource{
             calendarView = JKCalendarView(calendar: self, month: view.month.next)
             calendarView.focusWeek = 0
         }
-
+        
         calendarView.backgroundColor = backgroundColor
         calendarView.collapsedValue = collapsedValue
         calendarView.panRecognizer.isEnabled = !isScrollEnabled
