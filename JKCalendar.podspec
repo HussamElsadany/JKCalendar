@@ -19,4 +19,5 @@ Pod::Spec.new do |s|
     'CreditCardForm' => ['Sources/*.{xcassets,xib}']
   }
   s.frameworks = 'UIKit'
+  s.dependencies = 'JKInfinitePageView'
 end
