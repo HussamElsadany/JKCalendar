@@ -502,7 +502,7 @@ class JKCalendarView: UIView{
                 }
                 
                 let dayString = "\(info.day.day)" as NSString
-                guard let font = calendar.markFont else { return }
+                let font = UIFont(name: "HelveticaNeue-Medium", size: 13)!
                 
                 let paragraphStyle = NSMutableParagraphStyle()
                 paragraphStyle.alignment = .center
@@ -517,6 +517,8 @@ class JKCalendarView: UIView{
                     return info.day >= mark.start && info.day <= mark.end
                 }) {
                     unitStrAttrs[NSAttributedString.Key.foregroundColor] = calendar.backgroundColor
+                } else if info.day.date < Date() && calendar.shouldApplyPastDayColor {
+                    unitStrAttrs[NSAttributedString.Key.foregroundColor] = calendar.pastDayColor
                 } else if info.day == month{
                     unitStrAttrs[NSAttributedString.Key.foregroundColor] = calendar.textColor
                 } else {

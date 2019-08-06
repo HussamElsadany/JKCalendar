@@ -59,49 +59,21 @@ public class JKCalendar: UIView {
         }
     }
     
-    
-    
     /**
-     The Font of the Month Button text. Default value for this property is Helvetic.
+     The color of the day text. Default value for this property is a black color.
      */
-    public var monthButtonsFont: UIFont? = UIFont(name: "HelveticaNeue-Medium", size: 13) {
-        didSet {
-            previousButton.titleLabel?.font = monthButtonsFont
-            nextButton.titleLabel?.font = monthButtonsFont
-        }
-    }
-    
-    /**
-     The Font of the Year text. Default value for this property is Helvetic.
-     */
-    public var yearFont: UIFont? = UIFont(name: "HelveticaNeue-Medium", size: 13) {
-        didSet {
-            yearLabel.font = yearFont
-        }
-    }
-    
-    /**
-     The Font of the Month text. Default value for this property is Helvetic.
-     */
-    public var monthFont: UIFont? = UIFont(name: "HelveticaNeue-Medium", size: 13) {
-        didSet {
-            monthLabel.font = monthFont
-        }
-    }
-    
-    /**
-     The Font of the day text. Default value for this property is Helvetic.
-     */
-    public var markFont: UIFont? = UIFont(name: "HelveticaNeue-Medium", size: 13) {
+    public var textColor: UIColor = UIColor.black {
         didSet {
             reloadData()
         }
     }
     
+    public var shouldApplyPastDayColor = false
+    
     /**
-     The color of the day text. Default value for this property is a black color.
+     The color of the past day text. Default value for this property is a black color. Only Used if shouldApplyPastDayColor is true
      */
-    public var textColor: UIColor = UIColor.black {
+    public var pastDayColor: UIColor = UIColor.black {
         didSet {
             reloadData()
         }
@@ -210,7 +182,6 @@ public class JKCalendar: UIView {
             let weekCount = month.weeksCount
             collapsedMaximum = pageViewHeightConstraint.constant * CGFloat(weekCount - 1) / CGFloat(weekCount)
             setupLabels()
-            delegate?.calendar?(self, didChangedMonth: _month)
         }
     }
     
@@ -225,13 +196,13 @@ public class JKCalendar: UIView {
                 nextButton.setTitleColor(nextButton.titleColor(for: .normal)!.withAlphaComponent(1 - collapsedValue / collapsedMaximum), for: .normal)
                 
                 if collapsedValue == 0 && oldValue != collapsedValue {
-                    delegate?.calendar?(self, didChangedStatus: .expand)
+                    delegate?.calendar?(self, didChanged: .expand)
                     calendarPageView.isScrollEnabled = true
                 } else if collapsedValue == collapsedMaximum && oldValue != collapsedValue {
-                    delegate?.calendar?(self, didChangedStatus: .collapse)
+                    delegate?.calendar?(self, didChanged: .collapse)
                     calendarPageView.isScrollEnabled = true
                 } else if (collapsedValue != 0 && oldValue == 0) || (collapsedValue != collapsedMaximum && oldValue == collapsedMaximum) {
-                    delegate?.calendar?(self, didChangedStatus: .between)
+                    delegate?.calendar?(self, didChanged: .between)
                     calendarPageView.isScrollEnabled = false
                 }
             }
@@ -648,9 +619,7 @@ extension JKCalendar: JKInfinitePageViewDataSource{
     
     @objc optional func calendar(_ calendar: JKCalendar, didPan days: [JKDay])
     
-    @objc optional func calendar(_ calendar: JKCalendar, didChangedStatus status: JKCalendarViewStatus)
-    
-    @objc optional func calendar(_ calendar: JKCalendar, didChangedMonth month: JKMonth)
+    @objc optional func calendar(_ calendar: JKCalendar, didChanged status: JKCalendarViewStatus)
     
     @objc optional func heightOfFooterView(in calendar: JKCalendar) -> CGFloat
     
