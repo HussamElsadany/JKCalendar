@@ -17,9 +17,6 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '9.0'
   s.pod_target_xcconfig = { 'SWIFT_VERSION' => '4.2' }
   s.source_files  = "Sources/*.{swift,h}"
-  s.resource_bundles = {
-    'JKCalendar' => ['Sources/*.{xcassets,xib}']
-  }
   s.frameworks = 'UIKit'
   s.dependencies = 'JKInfinitePageView'
   
